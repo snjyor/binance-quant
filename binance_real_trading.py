@@ -16,13 +16,13 @@ pd.set_option('expand_frame_repr',False)
 # 交易
 
 '''基本参数'''
-time_interval = '1h'
+time_interval = '5m'
 symbol = 'BTC/USDT'
 base_coin = symbol.split('/')[-1]
 trade_coin = symbol.split('/')[0]
 
-binance = ccxt.binance({'apiKey':'mAvwEZwlRZX14x5DOMz8SPB3QiXFbydRlXjK7TSyt5ZBCS7ybWBCrkUFaCNVISMb',
-                        'secret':'kxdPaU4J2Z0QMtaScHX00NAd7zE6DrC0M4MPJyTcqB2K1PZZ2H7i4U2jumwty2vA'})
+binance = ccxt.binance({'apiKey':'mAvwEZwlRZX14x5DOMz8SPB3QiXFbydRlXjK7TSyt5ZBCS7ybWBCrkUFaCNVISMb',        # 此处修改为自己的apikey
+                        'secret':'kxdPaU4J2Z0QMtaScHX00NAd7zE6DrC0M4MPJyTcqB2K1PZZ2H7i4U2jumwty2vA'})       # 此处修改为自己的secret
 try:
     binance.load_markets()
 except:
@@ -53,9 +53,11 @@ while True:
 
     # 睡眠到下次运行时间
     next_run_time = sleep_to_next_runtime(time_interval)
-
-    #获取实时数据
-    df = get_binance_date(symbol, time_interval)
+    try:
+        #获取实时数据
+        df = get_binance_date(symbol, time_interval)
+    except Exception as err:
+        print(err)
     #产生交易信号
     df = ta_BBANDS_signal(df,para=[130,2,2,0])
     signal = df.iloc[-1]['signal']
